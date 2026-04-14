@@ -14,7 +14,7 @@ public class App {
 
         // Headless mode for Jenkins
         FirefoxOptions options = new FirefoxOptions();
-        options.setBinary("/usr/local/bin/firefox"); 
+        options.setBinary("/usr/bin/firefox"); 
         options.addArguments("--headless");
 
         WebDriver driver = new FirefoxDriver(options);
