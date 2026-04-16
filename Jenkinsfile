@@ -1,41 +1,39 @@
 pipeline {
-    agent any
+    agent any  // Use any available agent
 
     tools {
-        jdk 'JDK'          // ✅ ADDED (required)
-        maven 'Maven'
+        maven 'Maven'  // Ensure this matches the name configured in Jenkins
     }
-
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/Dhanwin007/MyMavenFirefox.git'
+                git branch: 'master', url: 'https://github.com/Manjunathah18/MyFirefox..git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package'  // Run Maven build
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn test'  // Run unit tests
             }
         }
 
-        stage('Setup Driver') {     // ✅ ADDED (required for Linux Jenkins)
-            steps {
-                sh 'chmod +x drivers/geckodriver'
-            }
-        }
-
+        
+        
+       
         stage('Run Application') {
             steps {
+                // Start the JAR application
                 sh 'mvn exec:java -Dexec.mainClass="com.example.App"'
             }
         }
+
+        
     }
 
     post {
