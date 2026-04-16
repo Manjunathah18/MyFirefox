@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/Manjunathah18/MyFirefox..git'
+                git branch: 'master', url: 'https://github.com/mithun2311/MyMavenSeleniumAppShoppingAutomation.git'
             }
         }
 

@@ -3,84 +3,47 @@ package com.example;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
 public class App {
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.gecko.driver", "/usr/bin/geckodriver");
-        
 
-        // Headless Firefox for Jenkins
-        FirefoxOptions options = new FirefoxOptions();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--remote-allow-origins=*");
 
-options.setBinary("/usr/bin/firefox"); // force correct binary
-options.addArguments("--headless");
-
-//  VERY IMPORTANT for VM/Jenkins
-options.addArguments("--no-sandbox");
-options.addArguments("--disable-dev-shm-usage");
-
-// disable GPU (important sometimes)
-options.addArguments("--disable-gpu");
-
-WebDriver driver = new FirefoxDriver(options);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        Actions actions = new Actions(driver);
+        WebDriver driver = new ChromeDriver(options);
 
         try {
-            //  1. SauceDemo Login
-            driver.get("https://www.saucedemo.com/");
+            driver.get("https://automationexercise.com/product_details/1");
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-name")))
-                    .sendKeys("standard_user");
-            driver.findElement(By.id("password")).sendKeys("secret_sauce");
-            driver.findElement(By.id("login-button")).click();
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            System.out.println("SauceDemo login successful ");
+            WebElement addToCartButton = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector(".btn.btn-default.cart")));
+            addToCartButton.click();
 
-            //  2. Automation Exercise (new tab)
-            driver.switchTo().newWindow(WindowType.TAB);
-            driver.get("https://automationexercise.com/products");
+            WebElement closeModalButton = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector(".close-modal")));
+            closeModalButton.click();
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search_product")))
-                    .sendKeys("Men Tshirt");
-            driver.findElement(By.id("submit_search")).click();
+            WebElement cartLink = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector(".shopping_cart a")));
+            cartLink.click();
 
-            WebElement product = wait.until(
-                    ExpectedConditions.elementToBeClickable(By.cssSelector("a[data-product-id='2']"))
-            );
-
-            product.click();
-
-            WebElement viewCart = wait.until(
-                    ExpectedConditions.elementToBeClickable(By.cssSelector("#cartModal a[href='/view_cart']"))
-            );
-            viewCart.click();
-
-            System.out.println("Automation Exercise product added to cart ");
-
-            // 3. Practice Test Automation (new tab)
-            driver.switchTo().newWindow(WindowType.TAB);
-            driver.get("https://practicetestautomation.com/practice-test-login/");
-
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")))
-                    .sendKeys("student");
-            driver.findElement(By.id("password")).sendKeys("Password123");
-            driver.findElement(By.id("submit")).click();
-
-            System.out.println("Practice Test Automation login successful ");
+            System.out.println("Product added successfully");
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            driver.quit(); //  MUST for Jenkins
+            driver.quit();
         }
     }
 }
